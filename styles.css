@@ -44,3 +44,78 @@ h1 {
   font-weight: bold;
   font-size: 1.5rem;
 }
+
+/* Botones de iconos personalizados */
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  color: inherit;
+}
+
+button:hover {
+  color: #2C3E50; /* Color más oscuro al pasar el cursor */
+}
+
+button:focus {
+  outline: none;
+}
+
+.icon-button {
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  transition: background-color 0.3s ease;
+}
+
+.icon-button:hover {
+  background-color: #d4d4d4;
+}
+
+.icon-button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #555;
+  transition: color 0.3s ease;
+}
+
+.icon-button:hover svg {
+  color: #2C3E50;
+}
+
+/* Mejora de estilo para la navegación */
+.navigation-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(to right, #2C3E50, #3498DB);
+  color: white;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: #f5f5f5;
+  color: #555;
+  text-align: center;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-button:hover {
+  background-color: #d4d4d4;
+  color: #2C3E50;
+}

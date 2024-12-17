@@ -20,6 +20,13 @@ Se realizá la implementación de un nuevo bottón **Ver Nódenes Generadas** en
     - Agregados botones *"Citas"  y "Pendientes" en la barra de navegación global. 
     - Visualización y pruebas satisfactorias.
 
+2. **`src/pages/Dashboard.jsx`
+    - Agregado dos botones nauviles entre la barra de navegación global y el panel principal.
+    - Botones agregados:
+        * Recibir Refacción | Icóno: ArrowDownTrayIcon
+        * Entegar Equipo | Icóno: ArrowUptrayIcon. 
+      - Mejora visibilidad, tamaóo y hover real consistente con el estilo del resto de la aplicación.
+
 ---
 
 Conclusión:
@@ -27,7 +34,7 @@ Conclusión:
 2. Su genera el botón avinando la funcional
 
 
--------------------------------------------------------
+---------------------------------------------------------
 
-# Responsable: Systema Automñtico de Cambios
-#> *Fecha: 17/12/2024*`* 
+# Responsable: Systema Automñntico de Cambios 
+#> *Fecha: 17/12/2024*  
