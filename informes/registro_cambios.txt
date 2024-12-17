@@ -1,0 +1,38 @@
+### Ifforme de Cambios - Implementación del Botó "Ver Nódenes Generadas"
+
+#### Descripción General
+Se realizá la implementación de un nuevo bottón **Ver Nódenes Generadas** en el ***encabezado principal ***de la aplicación. El bottón permite acceder a la pógina correspondiente ***Nódenes Generadas***, respetando el diseío y constilo existente.
+
+---
+
+#### Archivos Modificados:
+
+1. **`src/components/Navigation.jsx`*  
+    - Se agregaá el botón **"Ver Nódenes Generadas"* junto al botón **Panel Principal** y antes del **Mená Visual (Area Administrativa*)*.
+    - **Código Agregado:*
+      ****<long http://orders>***
+
+2. **app.jsx`
+    - Se agrega la ruta **/orders/*, y se en aplica la función. 
+    - __powered
+      ```
+    
+   
+---
+
+## Procedimiento para Agregar Nevos Botones:
+1. **Su emite en la sequencia y la ruta**.
+2. **Ver probador el Botón.** (Connectados para incorporario).
+
+
+---
+
+Conclusión:
+1. Se agrega la ruta */orders** y se aplica configs. 
+2. Su genera el botón avinando la funcional
+
+
+----------------------------------------------------
+
+# Responsable: Systema Automñtico de Cambios
+#> *Fecha: 17/12/2024*`* 
