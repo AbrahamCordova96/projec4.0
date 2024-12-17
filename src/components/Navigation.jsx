@@ -1,13 +1,13 @@
-import { Link, useLocation } from 'react-router-dom';
 import { Menu, Transition } from '@headlessui/react';
-import { Fragment } from 'react';
-import { 
-  ChartBarIcon, 
-  CurrencyDollarIcon, 
-  DocumentChartBarIcon,
+import {
+  ChartBarIcon,
   ChartPieIcon,
-  ChevronDownIcon 
+  ChevronDownIcon,
+  CurrencyDollarIcon,
+  DocumentChartBarIcon
 } from '@heroicons/react/24/outline';
+import { Fragment } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 function Navigation() {
   const location = useLocation();
@@ -43,13 +43,17 @@ function Navigation() {
     <nav className="bg-gradient-to-r from-[#2C3E50] to-[#3498DB] text-white shadow-lg">
       <div className="container px-4 mx-auto">
         <div className="flex items-center justify-between h-16">
+          {/* Título de la Aplicación */}
           <div className="flex-shrink-0">
             <Link to="/" className="text-xl font-bold transition-colors hover:text-gray-200">
               Sistema de Gestión
             </Link>
           </div>
+
+          {/* Botones de Navegación */}
           <div className="hidden md:block">
             <div className="flex items-center space-x-4">
+              {/* Botón Panel Principal */}
               <Link
                 to="/"
                 className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
@@ -61,6 +65,19 @@ function Navigation() {
                 Panel Principal
               </Link>
 
+              {/* Botón Ver Órdenes Generadas */}
+              <Link
+                to="/orders"
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  location.pathname === '/orders'
+                    ? 'bg-white/10 text-white shadow-inner'
+                    : 'text-gray-300 hover:bg-white/5'
+                }`}
+              >
+                Ver Órdenes Generadas
+              </Link>
+
+              {/* Botón Área Administrativa */}
               <Menu as="div" className="relative">
                 <Menu.Button
                   className={`

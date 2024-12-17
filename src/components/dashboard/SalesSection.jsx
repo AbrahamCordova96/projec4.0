@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faShoppingCart,
   faSearch,
@@ -52,7 +53,7 @@ function SalesSection() {
   return (
     <Card 
       title="Registro de Ventas" 
-      icon={faShoppingCart}
+      icon={<FontAwesomeIcon icon={faShoppingCart} />}
       elevated
       className="bg-gradient-to-br from-white to-blue-50"
     >
@@ -61,7 +62,7 @@ function SalesSection() {
           <label className="block text-sm font-medium text-gray-700 mb-1">Producto</label>
           <ProductSearch 
             onProductSelect={handleProductSelect} 
-            icon={faSearch}
+            icon={<FontAwesomeIcon icon={faSearch} />}
           />
         </div>
 
@@ -71,7 +72,7 @@ function SalesSection() {
           min="1"
           value={saleData.quantity}
           onChange={(e) => handleQuantityChange(parseInt(e.target.value))}
-          icon={faBoxes}
+          icon={<FontAwesomeIcon icon={faBoxes} />}
           required
         />
 
@@ -90,7 +91,7 @@ function SalesSection() {
         <Button
           type="submit"
           disabled={!saleData.product}
-          icon={faDollarSign}
+          icon={<FontAwesomeIcon icon={faDollarSign} />}
           variant="success"
           className="w-full mt-4"
         >

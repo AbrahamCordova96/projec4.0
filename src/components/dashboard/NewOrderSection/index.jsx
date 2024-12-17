@@ -39,7 +39,7 @@ function NewOrderSection() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const accountingEntry = {
       date: new Date(),
       type: orderData.advance ? 'advance' : 'income',
@@ -81,6 +81,11 @@ function NewOrderSection() {
     });
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setOrderData({ ...orderData, [name]: value });
+  };
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold mb-6">Nueva Orden</h2>
@@ -105,8 +110,9 @@ function NewOrderSection() {
           <div>
             <label className="block text-sm font-medium text-gray-700">Fallas del Sistema</label>
             <textarea
+              name="systemFailures"
               value={orderData.systemFailures}
-              onChange={(e) => setOrderData({...orderData, systemFailures: e.target.value})}
+              onChange={handleChange}
               placeholder="Sonido, cámaras, micrófono, etc."
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               rows={3}
@@ -116,8 +122,9 @@ function NewOrderSection() {
           <div>
             <label className="block text-sm font-medium text-gray-700">Daños Físicos</label>
             <textarea
+              name="physicalDamage"
               value={orderData.physicalDamage}
-              onChange={(e) => setOrderData({...orderData, physicalDamage: e.target.value})}
+              onChange={handleChange}
               placeholder="Lentes o cámaras rotas, golpes, rayones, etc."
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               rows={3}

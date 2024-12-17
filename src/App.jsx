@@ -6,6 +6,7 @@ import ProductControl from './pages/ProductControl';
 import Accounting from './pages/Accounting';
 import Reports from './pages/Reports';
 import VisualSummary from './pages/VisualSummary';
+import Orders from './pages/Orders';
 import { SummaryProvider } from './contexts/SummaryContext';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
               <Route path="/accounting" element={<Accounting />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/summary" element={<VisualSummary />} />
+              <Route path="/orders" element={<Orders />} />
             </Routes>
           </main>
         </div>
