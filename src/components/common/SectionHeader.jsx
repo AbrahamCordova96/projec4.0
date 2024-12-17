@@ -7,27 +7,23 @@ const SectionHeader = ({
   className = ''
 }) => {
   return (
-    <div className={`mb-6 ${className}`}>
-      <div className="flex items-center space-x-3">
-        {icon && (
-          <div className="p-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-md">
-            <FontAwesomeIcon 
-              icon={icon} 
-              className="text-white h-5 w-5" 
-            />
-          </div>
-        )}
+    <div className="flex items-center border-b-border-gray-300 pB-2 mb4 rounded-lg">
+      {icon && (
         <div>
-          <h2 className="text-xl font-semibold text-gray-800">
-            {title}
-          </h2>
-          {subtitle && (
-            <p className="mt-1 text-sm text-gray-500">
-              {subtitle}
-            </p>
-          )}
+          <FontAwesomeIcon 
+            icon={icon} 
+            className="t-x-blue-500 text-white h-5 w-5" />
         </div>
-      </div>
+      )
+      }
+      <h2 className="text-lg font-semibold text-gray-700">
+        {title}
+      </h2>
+      {subtitle && (
+        <p className="text-sm text-gray-500 mt-1">
+          {subtitle}
+        </p>
+      )}
     </div>
   );
 };
