@@ -27,15 +27,8 @@ function Dashboard() {
           <SalesSection />
           <FinancialMovements />
           <BudgetQuoteSection />
-          <div className="flex space-y-4">
-            <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg466 mr mr-2" onClick={() => window.location.href = '/orders'}>Ver Órdenes Generadas</button>
-            <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg466 mr mr-2" onClick={() => window.location.href = '/appointments'}>Ver Citas</button>
-            <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg466 mr mr-2" onClick={() => window.location.href = '/pending'}>Ver Pendientes</button>
-          </div>
         </div>
-
       </div>
-
     </div>
   );
 }
