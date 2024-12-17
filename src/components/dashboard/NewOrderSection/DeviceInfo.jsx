@@ -1,7 +1,19 @@
 import React from 'react';
+import BrandModelSelector from './BrandModelSelector';
 
 function DeviceInfo({ data, onChange }) {
   const deviceTypes = ['Móvil', 'Tablet', 'Laptop', 'Otros'];
+
+  const handleBrandModelChange = (brand, model, modelData) => {
+    onChange({
+      ...data,
+      brand: brand,
+      model: model,
+      suggestedPrice: modelData?.precio,
+      quality: modelData?.calidad,
+      providerPrice: modelData?.precioProveedor
+    });
+  };
 
   return (
     <div className="space-y-4">
@@ -20,24 +32,13 @@ function DeviceInfo({ data, onChange }) {
             ))}
           </select>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Marca</label>
-          <input
-            type="text"
-            value={data.brand}
-            onChange={(e) => onChange({...data, brand: e.target.value})}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Modelo</label>
-          <input
-            type="text"
-            value={data.model}
-            onChange={(e) => onChange({...data, model: e.target.value})}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            required
+        
+        <div className="col-span-2">
+          <BrandModelSelector
+            initialBrand={data.brand}
+            initialModel={data.model}
+            onBrandChange={(brand) => handleBrandModelChange(brand, '', null)}
+            onModelChange={(model, modelData) => handleBrandModelChange(data.brand, model, modelData)}
           />
         </div>
       </div>

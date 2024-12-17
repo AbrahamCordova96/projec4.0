@@ -1,11 +1,11 @@
 import { useState } from 'react';
+import { formatDateTime, generateOrderNumber } from '../../../utils/formatters';
+import { printTickets } from '../../../utils/ticketGenerator';
 import CustomerInfo from './CustomerInfo';
 import DeviceInfo from './DeviceInfo';
 import OrderForm from './OrderForm';
-import PriceInfo from './PriceInfo';
 import PartsModal from './PartsModal';
-import { generateOrderNumber, formatDateTime } from '../../../utils/formatters';
-import { printTickets } from '../../../utils/ticketGenerator';
+import PriceInfo from './PriceInfo';
 
 function NewOrderSection() {
   const [orderData, setOrderData] = useState({
@@ -16,6 +16,10 @@ function NewOrderSection() {
     deviceType: '',
     brand: '',
     model: '',
+    // Nuevos campos para la información del modelo
+    suggestedPrice: '',
+    quality: '',
+    providerPrice: '',
     systemFailures: '',
     physicalDamage: '',
     repairOperations: [],
@@ -68,6 +72,10 @@ function NewOrderSection() {
       deviceType: '',
       brand: '',
       model: '',
+      // Limpiar también los nuevos campos
+      suggestedPrice: '',
+      quality: '',
+      providerPrice: '',
       systemFailures: '',
       physicalDamage: '',
       repairOperations: [],
@@ -84,6 +92,16 @@ function NewOrderSection() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setOrderData({ ...orderData, [name]: value });
+  };
+
+  // Nuevo manejador para actualizar los precios sugeridos
+  const handleDeviceInfoChange = (newData) => {
+    setOrderData(prev => ({
+      ...prev,
+      ...newData,
+      // Si hay un precio sugerido, actualizar el precio total
+      totalPrice: newData.suggestedPrice || prev.totalPrice
+    }));
   };
 
   return (
@@ -103,7 +121,7 @@ function NewOrderSection() {
 
         <DeviceInfo
           data={orderData}
-          onChange={setOrderData}
+          onChange={handleDeviceInfoChange}
         />
 
         <div className="space-y-4">
