@@ -9,23 +9,16 @@ Se realizá la implementación de un nuevo bottón **Ver Nódenes Generadas** en
 
 1. **`src/components/Navigation.jsx`*  
     - Se agregaá el botón **"Ver Nódenes Generadas"* junto al botón **Panel Principal** y antes del **Mená Visual (Area Administrativa*)*.
-    - **Código Agregado:*
-      ****<long http://orders>***
-
-2. **app.jsx`
-    - Se agrega la ruta **/orders/*, y se en aplica la función. 
-    - __powered
+    - **Codigo Agregado:*
       ```
-    
-   
-3. **\*src/pages/Dashboard.jsx**\*
-    - Se agregaron neuvos botones *Vir Citas* y *Ver Pendientes* en la pagéna principal.
-    - **Codigo agregado:*
+      <Link
+        to="/orders"
+        className="px-4 py-2 rounded bg-white/10 text-white shadow-inner"
+      >Ver Órdenes Generadas</Link>
       ```
-      <button
-        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg466 mr mr-2" onClick={() => window.location.href = '/appointments'}>Ver Citas</button>
-      <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg466 mr mr-2" onClick={() => window.location.href = '/pending'}>Ver Pendientes</button>
-       ```
+    - **app.jsx`
+    - Agregados botones *"Citas"  y "Pendientes" en la barra de navegación global. 
+    - Visualización y pruebas satisfactorias.
 
 ---
 
