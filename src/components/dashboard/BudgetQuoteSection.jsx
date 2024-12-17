@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { faFileInvoice, faCalendarPlus, faEraser } from '@fortawesome/free-solid-svg-icons';
-import Card from '../common/Card';
+import SectionHeader from '../common/SectionHeader';
 import Input from '../common/Input';
 import Select from '../common/Select';
 import TextArea from '../common/TextArea';
 import Button from '../common/Button';
+import BrandModelSelector from './NewOrderSection/BrandModelSelector';
 
 function BudgetQuoteSection() {
   const [formData, setFormData] = useState({
@@ -16,7 +17,10 @@ function BudgetQuoteSection() {
     model: '',
     comments: '',
     price: '',
-    appointmentDate: ''
+    appointmentDate: '',
+    suggestedPrice: '',
+    quality: '',
+    providerPrice: ''
   });
 
   const operations = [
@@ -30,6 +34,17 @@ function BudgetQuoteSection() {
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleBrandModelChange = (brand, model, modelData) => {
+    setFormData(prev => ({
+      ...prev,
+      brand,
+      model,
+      price: modelData?.precio || prev.price,
+      quality: modelData?.calidad || '',
+      providerPrice: modelData?.precioProveedor || ''
+    }));
   };
 
   const handleSubmit = (type) => {
@@ -46,16 +61,21 @@ function BudgetQuoteSection() {
       model: '',
       comments: '',
       price: '',
-      appointmentDate: ''
+      appointmentDate: '',
+      suggestedPrice: '',
+      quality: '',
+      providerPrice: ''
     });
   };
 
   return (
-    <Card 
-      title="Presupuesto" 
-      icon={faFileInvoice}
-      elevated
-    >
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      {/* Encabezado con SectionHeader */}
+      <SectionHeader 
+        title="Presupuesto"
+        icon={faFileInvoice}
+      />
+
       <div className="space-y-4">
         <Input
           label="Fecha"
@@ -91,20 +111,11 @@ function BudgetQuoteSection() {
         />
 
         <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="Marca"
-            value={formData.brand}
-            onChange={(e) => handleChange('brand', e.target.value)}
-            required
-            placeholder="Marca del dispositivo"
-          />
-
-          <Input
-            label="Modelo"
-            value={formData.model}
-            onChange={(e) => handleChange('model', e.target.value)}
-            required
-            placeholder="Modelo del dispositivo"
+          <BrandModelSelector
+            initialBrand={formData.brand}
+            initialModel={formData.model}
+            onBrandChange={(brand) => handleBrandModelChange(brand, '', null)}
+            onModelChange={(model, modelData) => handleBrandModelChange(formData.brand, model, modelData)}
           />
         </div>
 
@@ -159,7 +170,7 @@ function BudgetQuoteSection() {
           </Button>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
 

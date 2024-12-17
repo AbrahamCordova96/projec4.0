@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { 
-  faMoneyBillTransfer,
-  faArrowTrendUp,
+import {
   faArrowTrendDown,
+  faArrowTrendUp,
   faDollarSign,
-  faFileLines
+  faFileLines,
+  faMoneyBillTransfer
 } from '@fortawesome/free-solid-svg-icons';
-import Card from '../common/Card';
-import Input from '../common/Input';
-import TextArea from '../common/TextArea';
+import { useState } from 'react';
 import Button from '../common/Button';
+import Input from '../common/Input';
+import SectionHeader from '../common/SectionHeader';
+import TextArea from '../common/TextArea';
 
 function FinancialMovements() {
   const [movement, setMovement] = useState({
@@ -20,7 +20,6 @@ function FinancialMovements() {
 
   const handleSubmit = (type) => {
     console.log('Movimiento registrado:', { ...movement, type });
-    
     setMovement({
       amount: '',
       description: '',
@@ -29,11 +28,12 @@ function FinancialMovements() {
   };
 
   return (
-    <Card 
-      title="Movimientos Financieros Adicionales" 
-      icon={faMoneyBillTransfer}
-      elevated
-    >
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      <SectionHeader 
+        title="Movimientos Financieros Adicionales"
+        icon={faMoneyBillTransfer}
+      />
+
       <div className="space-y-4">
         <Input
           label="Monto"
@@ -73,7 +73,7 @@ function FinancialMovements() {
           </Button>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
 

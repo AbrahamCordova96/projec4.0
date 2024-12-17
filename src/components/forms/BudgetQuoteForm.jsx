@@ -1,11 +1,10 @@
+import { faCalendarPlus, faEraser, faFileInvoice } from '@fortawesome/free-solid-svg-icons';
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileInvoice, faCalendarPlus, faEraser } from '@fortawesome/free-solid-svg-icons';
+import Button from '../common/Button';
 import Input from '../common/Input';
+import SectionHeader from '../common/SectionHeader';
 import Select from '../common/Select';
 import TextArea from '../common/TextArea';
-import Button from '../common/Button';
-import Section from '../layout/Section';
 
 const BudgetQuoteForm = () => {
   const [formData, setFormData] = useState({
@@ -52,7 +51,12 @@ const BudgetQuoteForm = () => {
   };
 
   return (
-    <Section title="Presupuesto" elevated>
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      <SectionHeader 
+        title="Presupuesto"
+        icon={faFileInvoice}
+      />
+
       <div className="space-y-4">
         <Input
           label="Fecha"
@@ -150,7 +154,7 @@ const BudgetQuoteForm = () => {
           </Button>
         </div>
       </div>
-    </Section>
+    </div>
   );
 };
 

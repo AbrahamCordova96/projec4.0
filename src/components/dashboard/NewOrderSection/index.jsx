@@ -6,6 +6,8 @@ import DeviceInfo from './DeviceInfo';
 import OrderForm from './OrderForm';
 import PartsModal from './PartsModal';
 import PriceInfo from './PriceInfo';
+import SectionHeader from '../../common/SectionHeader';
+import { ClipboardIcon } from '@heroicons/react/24/solid';
 
 function NewOrderSection() {
   const [orderData, setOrderData] = useState({
@@ -16,7 +18,6 @@ function NewOrderSection() {
     deviceType: '',
     brand: '',
     model: '',
-    // Nuevos campos para la información del modelo
     suggestedPrice: '',
     quality: '',
     providerPrice: '',
@@ -72,7 +73,6 @@ function NewOrderSection() {
       deviceType: '',
       brand: '',
       model: '',
-      // Limpiar también los nuevos campos
       suggestedPrice: '',
       quality: '',
       providerPrice: '',
@@ -94,19 +94,20 @@ function NewOrderSection() {
     setOrderData({ ...orderData, [name]: value });
   };
 
-  // Nuevo manejador para actualizar los precios sugeridos
   const handleDeviceInfoChange = (newData) => {
     setOrderData(prev => ({
       ...prev,
       ...newData,
-      // Si hay un precio sugerido, actualizar el precio total
       totalPrice: newData.suggestedPrice || prev.totalPrice
     }));
   };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-6">Nueva Orden</h2>
+      <SectionHeader 
+        title="Nueva Orden" 
+        icon={<ClipboardIcon className="w-6 h-6 text-blue-500" />} 
+      />
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <OrderForm 
