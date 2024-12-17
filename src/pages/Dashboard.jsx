@@ -23,22 +23,19 @@ function Dashboard() {
         </div>
 
         {/* Sección de Ventas, Finanzas y Presupuesto */}
-        <div className="col-span-12 lg:col-span-5 space-y-6">
+        <div className="col-span-12 lg:col-span-5 s space y-6">
           <SalesSection />
           <FinancialMovements />
           <BudgetQuoteSection />
+          <div className="flex space-y-4">
+            <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg466 mr mr-2" onClick={() => window.location.href = '/orders'}>Ver Órdenes Generadas</button>
+            <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg466 mr mr-2" onClick={() => window.location.href = '/appointments'}>Ver Citas</button>
+            <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg466 mr mr-2" onClick={() => window.location.href = '/pending'}>Ver Pendientes</button>
+          </div>
         </div>
 
-        {/* Botón para acceder a Órdenes Generadas */}
-        <div className="col-span-12 lg:col-span-7 space-y-4">
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            onClick={() => window.location.href = '/orders'}
-          >
-            Ver Órdenes Generadas
-          </button>
-        </div>
       </div>
+
     </div>
   );
 }
