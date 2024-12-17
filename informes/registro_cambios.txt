@@ -18,12 +18,14 @@ Se realizá la implementación de un nuevo bottón **Ver Nódenes Generadas** en
       ```
     
    
----
-
-## Procedimiento para Agregar Nevos Botones:
-1. **Su emite en la sequencia y la ruta**.
-2. **Ver probador el Botón.** (Connectados para incorporario).
-
+3. **\*src/pages/Dashboard.jsx**\*
+    - Se agregaron neuvos botones *Vir Citas* y *Ver Pendientes* en la pagéna principal.
+    - **Codigo agregado:*
+      ```
+      <button
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg466 mr mr-2" onClick={() => window.location.href = '/appointments'}>Ver Citas</button>
+      <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg466 mr mr-2" onClick={() => window.location.href = '/pending'}>Ver Pendientes</button>
+       ```
 
 ---
 
@@ -32,7 +34,7 @@ Conclusión:
 2. Su genera el botón avinando la funcional
 
 
-----------------------------------------------------
+-------------------------------------------------------
 
 # Responsable: Systema Automñtico de Cambios
 #> *Fecha: 17/12/2024*`* 
