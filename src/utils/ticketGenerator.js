@@ -1,66 +1,216 @@
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
-import { formatCurrency, formatDateTime } from './formatters';
-
-export const generateTicket = (orderData, type = 'client') => {
-  const doc = new jsPDF();
-  
-  // Configuración básica
-  doc.setFontSize(12);
-  
-  // Encabezado
-  doc.setFontSize(16);
-  doc.text('Sistema de Gestión Financiera', 105, 20, { align: 'center' });
-  doc.setFontSize(12);
-  
-  // Información de la orden
-  doc.text(`Orden #: ${orderData.orderNumber}`, 20, 40);
-  doc.text(`Fecha: ${formatDateTime(orderData.creationDateTime)}`, 20, 50);
-  
-  // Información del cliente
-  doc.text('Datos del Cliente:', 20, 70);
-  doc.text(`Nombre: ${orderData.customerName}`, 30, 80);
-  doc.text(`Teléfono: ${orderData.customerPhone}`, 30, 90);
-  
-  // Información del dispositivo
-  doc.text('Dispositivo:', 20, 110);
-  doc.text(`Tipo: ${orderData.deviceType}`, 30, 120);
-  doc.text(`Marca: ${orderData.brand}`, 30, 130);
-  doc.text(`Modelo: ${orderData.model}`, 30, 140);
-  doc.text(`Falla: ${orderData.faultDescription}`, 30, 150);
-  
-  // Estado del dispositivo
-  if (orderData.deviceState.length > 0) {
-    doc.text('Estado Físico del Dispositivo:', 20, 170);
-    orderData.deviceState.forEach((mark, index) => {
-      doc.text(`• ${mark.comment}`, 30, 180 + (index * 10));
-    });
-  }
-  
-  // Información de precios
-  const y = 220;
-  doc.text('Detalles del Pago:', 20, y);
-  doc.text(`Total: ${formatCurrency(orderData.totalPrice)}`, 30, y + 10);
-  if (orderData.advance) {
-    doc.text(`Adelanto: ${formatCurrency(orderData.advance)}`, 30, y + 20);
-  }
-  if (orderData.discount) {
-    doc.text(`Descuento: ${formatCurrency(orderData.discount)}`, 30, y + 30);
-    doc.text(`Motivo: ${orderData.discountReason}`, 30, y + 40);
-  }
-  doc.text(`Saldo Pendiente: ${formatCurrency(orderData.pendingBalance)}`, 30, y + 50);
-  
-  // Firma
-  doc.text('_____________________', 20, y + 80);
-  doc.text('Firma de conformidad', 20, y + 90);
-  
-  return doc;
-};
-
 export const printTickets = (orderData) => {
-  const clientTicket = generateTicket(orderData, 'client');
-  const workshopTicket = generateTicket(orderData, 'workshop');
-  
-  clientTicket.save(`ticket-cliente-${orderData.orderNumber}.pdf`);
-  workshopTicket.save(`ticket-taller-${orderData.orderNumber}.pdf`);
+  const ticketWindow = window.open("", "_blank");
+
+  const ticketTemplate = `
+    <html>
+    <head>
+      <title>Ticket de Orden #${orderData.orderNumber}</title>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+
+        body {
+          font-family: 'Roboto', Arial, sans-serif;
+          font-weight: bold;
+          width: 75mm;
+          margin: 0;
+          padding: 0;
+        }
+        
+        .ticket-header, .ticket-footer {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+        
+        .ticket-content {
+          border: 1px solid #000;
+          padding: 10px;
+        }
+        
+        .ticket-content h1 {
+          font-size: 18px;
+          margin: 0 0 10px 0;
+          text-align: center;
+        }
+        
+        .ticket-content .section {
+          margin-bottom: 10px;
+        }
+        
+        .ticket-content .section div {
+          margin-bottom: 5px;
+          font-size: 12px;
+        }
+        
+        .ticket-content .summary {
+          border-top: 1px solid #000;
+          padding-top: 10px;
+        }
+        
+        .ticket-content .summary div {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 5px;
+        }
+        
+        .logo {
+          width: 50mm;
+          margin-bottom: 10px;
+        }
+        
+        .business-info {
+          margin-bottom: 20px;
+          font-size: 12px;
+        }
+        
+        .disclaimer {
+          text-align: left;
+          font-size: 10px;
+          margin-top: 20px;
+        }
+        
+        .disclaimer p {
+          margin: 5px 0;
+          padding-bottom: 5px;
+          border-bottom: 1px dotted #000;
+        }
+
+        .customer-signature {
+          margin-top: 30px;
+          text-align: center;
+        }
+
+        .signature-line {
+          margin: 20px auto;
+          width: 80%;
+          border-bottom: 1px solid #000;
+        }
+
+        @media print {
+          body {
+            width: 75mm;
+            margin: 0;
+            padding: 0;
+          }
+          
+          .ticket-content {
+            border: none;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="ticket-header">
+        <img src="/images/logo.png" alt="LOGO" class="logo">
+        <div class="business-info">
+          <div>Salva Cell</div>
+          <div>Av C. del refugio s/n fracc. valle de las misiones</div>
+          <div>Mexicali B. C.</div>
+          <div>+52 686 226 23 77</div>
+          <div>salva.tech@gmail.com</div>
+        </div>
+      </div>
+      
+      <div class="ticket-content">
+        <div class="section">
+          <h1>No Orden #${orderData.orderNumber}</h1>
+          <div>Fecha: ${orderData.creationDateTime}</div>
+          <div>Cliente: ${orderData.customerName}</div>
+          <div>Teléfono: ${orderData.customerPhone}</div>
+        </div>
+        
+        <div class="section">
+          <div>Dispositivo: ${orderData.deviceType}</div>
+          <div>Marca: ${orderData.brand}</div>
+          <div>Modelo: ${orderData.model}</div>
+          ${
+            orderData.systemFailures
+              ? `<div>Fallas del Sistema: ${orderData.systemFailures}</div>`
+              : ""
+          }
+          ${
+            orderData.physicalDamage
+              ? `<div>Daños Físicos: ${orderData.physicalDamage}</div>`
+              : ""
+          }
+          ${
+            orderData.repairOperations.length > 0
+              ? `<div>Operaciones: ${orderData.repairOperations.join(
+                  ", "
+                )}</div>`
+              : ""
+          }
+        </div>
+        
+        ${
+          orderData.parts.length > 0
+            ? `
+        <div class="section">
+          <div><strong>Refacciones:</strong></div>
+          ${orderData.parts
+            .map(
+              (part) => `<div>${part.name} - $${part.price.toFixed(2)}</div>`
+            )
+            .join("")}
+        </div>
+        `
+            : ""
+        }
+        
+        <div class="section summary">
+          <div>
+            <span>Precio Total:</span>
+            <span>$${parseFloat(orderData.totalPrice).toFixed(2)}</span>
+          </div>
+          ${
+            orderData.discount
+              ? `
+          <div>
+            <span>Descuento:</span>
+            <span>$${parseFloat(orderData.discount).toFixed(2)}</span>
+          </div>
+          `
+              : ""
+          }
+          <div>
+            <span>Adelanto:</span>
+            <span>$${parseFloat(orderData.advance).toFixed(2)}</span>
+          </div>
+          <div>
+            <span>Saldo Pendiente:</span>
+            <span>$${parseFloat(orderData.pendingBalance).toFixed(2)}</span>
+          </div>
+        </div>
+        
+        ${
+          orderData.deliveryDateTime
+            ? `
+        <div class="section">
+          <div>Fecha de Entrega: ${orderData.deliveryDateTime}</div>
+        </div>
+        `
+            : ""
+        }
+        
+        <div class="disclaimer">
+          <p>*El cliente debe informar al técnico si el dispositivo se ha sumergido en agua o ha sufrido daños físicos antes de la reparación.</p>
+          <p>*El cliente debe ser consciente de que ciertas reparaciones se llevarán a cabo más tiempo que otras. Micro soldadura y cortos de 5-15 días.</p>
+          <p>*El cliente acepta que si no recoge el dispositivo después de 15 días de la fecha acordada, el taller puede tomar posesión del dispositivo para recuperar el costo de la reparación.</p>
+          <p>*El cliente debe tener en cuenta que algunas reparaciones pueden requerir la eliminación de datos del dispositivo.</p>
+          <p>*El cliente debe ser consciente de que algunos dispositivos no tienen solución debido a daños irreparables.</p>
+          <p>*El cliente debe tener en cuenta que algunos dispositivos pueden necesitar piezas nuevas y que estas pueden tener un costo adicional.</p>
+          <p>*El cliente acepta que la garantía solo cubrirá el trabajo realizado por el taller y no cubrirá ningún daño adicional causado por el mal uso del dispositivo.</p>
+        </div>
+
+        <div class="customer-signature">
+          <div>Firma del cliente</div>
+          <div class="signature-line"></div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  ticketWindow.document.write(ticketTemplate);
+  ticketWindow.document.close();
+  ticketWindow.print();
 };
