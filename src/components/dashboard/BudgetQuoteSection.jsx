@@ -1,11 +1,15 @@
+import {
+  CalendarIcon,
+  ClockIcon,
+  CurrencyDollarIcon,
+  DocumentTextIcon,
+  PhoneIcon,
+  TrashIcon,
+  UserIcon,
+  WrenchScrewdriverIcon
+} from '@heroicons/react/24/outline';
 import { useState } from 'react';
-import { faFileInvoice, faCalendarPlus, faEraser } from '@fortawesome/free-solid-svg-icons';
-import SectionHeader from '../common/SectionHeader';
-import Input from '../common/Input';
-import Select from '../common/Select';
-import TextArea from '../common/TextArea';
-import Button from '../common/Button';
-import BrandModelSelector from './NewOrderSection/BrandModelSelector';
+import BrandModelSelector from '../NewOrderSection/BrandModelSelector';
 
 function BudgetQuoteSection() {
   const [formData, setFormData] = useState({
@@ -24,11 +28,11 @@ function BudgetQuoteSection() {
   });
 
   const operations = [
-    'Cambio de pantalla',
-    'Reparación de puerto de carga',
-    'Cambio de batería',
-    'Reparación de placa',
-    'Actualización de software',
+    'Cambio de Pantalla',
+    'Reparación de Puerto de Carga',
+    'Cambio de Batería',
+    'Reparación de Placa',
+    'Actualización de Software',
     'Otro'
   ];
 
@@ -69,48 +73,95 @@ function BudgetQuoteSection() {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      {/* Encabezado con SectionHeader */}
-      <SectionHeader 
-        title="Presupuesto"
-        icon={faFileInvoice}
-      />
+    <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="flex items-center mb-4">
+        <DocumentTextIcon className="h-7 w-7 text-gray-700 mr-3" />
+        <h2 className="text-2xl font-bold text-gray-800">Presupuesto</h2>
+      </div>
 
-      <div className="space-y-4">
-        <Input
-          label="Fecha"
-          type="date"
-          value={formData.date}
-          onChange={(e) => handleChange('date', e.target.value)}
-          required
-        />
+      <div className="space-y-6">
+        <div>
+          <label className="block text-base font-semibold text-gray-700 mb-2">
+            Fecha
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <CalendarIcon className="h-5 w-5 text-gray-500" />
+            </div>
+            <input
+              type="date"
+              value={formData.date}
+              onChange={(e) => handleChange('date', e.target.value)}
+              className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 font-medium"
+              required
+            />
+          </div>
+        </div>
 
-        <Input
-          label="Nombre del Cliente"
-          value={formData.customerName}
-          onChange={(e) => handleChange('customerName', e.target.value)}
-          required
-          placeholder="Nombre completo"
-        />
+        <div>
+          <label className="block text-base font-semibold text-gray-700 mb-2">
+            Nombre del Cliente
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <UserIcon className="h-5 w-5 text-gray-500" />
+            </div>
+            <input
+              type="text"
+              value={formData.customerName}
+              onChange={(e) => handleChange('customerName', e.target.value)}
+              className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 font-medium"
+              placeholder="Nombre completo"
+              required
+            />
+          </div>
+        </div>
 
-        <Input
-          label="Teléfono"
-          type="tel"
-          value={formData.phone}
-          onChange={(e) => handleChange('phone', e.target.value)}
-          required
-          placeholder="Número de contacto"
-        />
+        <div>
+          <label className="block text-base font-semibold text-gray-700 mb-2">
+            Teléfono
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <PhoneIcon className="h-5 w-5 text-gray-500" />
+            </div>
+            <input
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => handleChange('phone', e.target.value)}
+              className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 font-medium"
+              placeholder="Número de contacto"
+              required
+            />
+          </div>
+        </div>
 
-        <Select
-          label="Operación"
-          options={operations}
-          value={formData.operation}
-          onChange={(value) => handleChange('operation', value)}
-          required
-        />
+        <div>
+          <label className="block text-base font-semibold text-gray-700 mb-2">
+            Operación
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <WrenchScrewdriverIcon className="h-5 w-5 text-gray-500" />
+            </div>
+            <select
+              value={formData.operation}
+              onChange={(e) => handleChange('operation', e.target.value)}
+              className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 font-medium"
+              required
+            >
+              <option value="">Seleccionar Operación</option>
+              {operations.map(op => (
+                <option key={op} value={op}>{op}</option>
+              ))}
+            </select>
+          </div>
+        </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-base font-semibold text-gray-700 mb-2">
+            Marca y Modelo
+          </label>
           <BrandModelSelector
             initialBrand={formData.brand}
             initialModel={formData.model}
@@ -119,55 +170,82 @@ function BudgetQuoteSection() {
           />
         </div>
 
-        <TextArea
-          label="Comentarios"
-          value={formData.comments}
-          onChange={(e) => handleChange('comments', e.target.value)}
-          rows={3}
-          placeholder="Detalles adicionales..."
-        />
+        <div>
+          <label className="block text-base font-semibold text-gray-700 mb-2">
+            Comentarios
+          </label>
+          <div className="relative">
+            <div className="absolute top-3 left-3 pointer-events-none">
+              <DocumentTextIcon className="h-5 w-5 text-gray-500" />
+            </div>
+            <textarea
+              value={formData.comments}
+              onChange={(e) => handleChange('comments', e.target.value)}
+              className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 font-medium"
+              rows={3}
+              placeholder="Detalles adicionales..."
+            />
+          </div>
+        </div>
 
-        <Input
-          label="Precio $"
-          type="number"
-          value={formData.price}
-          onChange={(e) => handleChange('price', e.target.value)}
-          required
-          placeholder="0.00"
-        />
+        <div>
+          <label className="block text-base font-semibold text-gray-700 mb-2">
+            Precio
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <CurrencyDollarIcon className="h-5 w-5 text-gray-500" />
+            </div>
+            <input
+              type="number"
+              value={formData.price}
+              onChange={(e) => handleChange('price', e.target.value)}
+              className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 font-medium"
+              placeholder="0.00"
+              required
+            />
+          </div>
+        </div>
 
-        <Input
-          label="Fecha de Cita"
-          type="datetime-local"
-          value={formData.appointmentDate}
-          onChange={(e) => handleChange('appointmentDate', e.target.value)}
-        />
+        <div>
+          <label className="block text-base font-semibold text-gray-700 mb-2">
+            Fecha de Cita
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <ClockIcon className="h-5 w-5 text-gray-500" />
+            </div>
+            <input
+              type="datetime-local"
+              value={formData.appointmentDate}
+              onChange={(e) => handleChange('appointmentDate', e.target.value)}
+              className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 font-medium"
+            />
+          </div>
+        </div>
 
         <div className="flex space-x-4 pt-4">
-          <Button
+          <button
             onClick={() => handleSubmit('quote')}
-            icon={faFileInvoice}
-            variant="primary"
-            className="flex-1"
+            className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
+            <DocumentTextIcon className="h-6 w-6 mr-2" />
             Generar Presupuesto
-          </Button>
-          <Button
+          </button>
+          <button
             onClick={() => handleSubmit('appointment')}
-            icon={faCalendarPlus}
-            variant="success"
-            className="flex-1"
+            className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
           >
+            <CalendarIcon className="h-6 w-6 mr-2" />
             Agendar Cita
-          </Button>
-          <Button
+          </button>
+          <button
             onClick={handleClear}
-            icon={faEraser}
-            variant="secondary"
-            className="flex-1"
+            className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
           >
+            <TrashIcon className="h-6 w-6 mr-2" />
             Limpiar Datos
-          </Button>
+          </button>
         </div>
       </div>
     </div>

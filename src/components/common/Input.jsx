@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 const Input = ({
   label,
   type = 'text',
@@ -7,7 +5,7 @@ const Input = ({
   value,
   onChange,
   error,
-  icon,
+  icon: Icon,
   className = '',
   required = false,
   ...props
@@ -15,15 +13,15 @@ const Input = ({
   return (
     <div className={className}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-base font-semibold text-gray-700 mb-2">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
-      <div className="relative rounded-lg shadow-sm">
-        {icon && (
+      <div className="relative rounded-md shadow-sm">
+        {Icon && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <FontAwesomeIcon icon={icon} className="text-gray-400" />
+            <Icon className="h-5 w-5 text-gray-500" />
           </div>
         )}
         <input
@@ -32,10 +30,10 @@ const Input = ({
           onChange={onChange}
           placeholder={placeholder}
           className={`
-            block w-full rounded-lg border-gray-300 
-            ${icon ? 'pl-10' : 'pl-4'} pr-4 py-2
-            focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-            transition-colors duration-200
+            block w-full rounded-md border-gray-300 
+            ${Icon ? 'pl-10' : 'pl-4'} pr-4 py-2.5
+            focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+            transition-colors duration-200 font-medium
             ${error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : ''}
             ${props.disabled ? 'bg-gray-50 text-gray-500' : ''}
           `}
@@ -44,7 +42,7 @@ const Input = ({
         />
       </div>
       {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
+        <p className="mt-2 text-sm font-medium text-red-600">{error}</p>
       )}
     </div>
   );

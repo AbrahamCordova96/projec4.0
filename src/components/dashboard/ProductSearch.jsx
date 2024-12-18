@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { 
+  MagnifyingGlassIcon, 
+  CheckIcon,
+  TagIcon,
+  CurrencyDollarIcon 
+} from '@heroicons/react/24/outline';
 
-function ProductSearch({ onProductSelect, icon }) {
+function ProductSearch({ onProductSelect }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
-  // Simulated product data - in a real app this would come from an API/database
+  // Datos simulados de productos - en una aplicación real vendrían de una API/base de datos
   const products = [
     { id: 1, name: 'Smartphone X', price: 599.99 },
     { id: 2, name: 'Tablet Pro', price: 799.99 },
@@ -32,42 +36,44 @@ function ProductSearch({ onProductSelect, icon }) {
 
   return (
     <div className="relative">
-      <div className="relative rounded-lg shadow-sm">
-        {icon && (
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <FontAwesomeIcon icon={icon} className="text-gray-400" />
-          </div>
-        )}
+      <div className="relative">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <MagnifyingGlassIcon className="h-5 w-5 text-gray-500" />
+        </div>
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Buscar producto..."
-          className={`
-            block w-full rounded-lg border-gray-300 
-            ${icon ? 'pl-10' : 'pl-4'} pr-4 py-2
-            focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-            transition-colors duration-200
-          `}
+          placeholder="Buscar Producto..."
+          className="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 font-medium text-base"
         />
       </div>
       
       {suggestions.length > 0 && (
-        <div className="absolute z-10 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 divide-y divide-gray-100">
+        <div className="absolute z-10 w-full mt-2 bg-white rounded-lg shadow-lg border border-gray-200">
           {suggestions.map((product) => (
             <div
               key={product.id}
               onClick={() => handleSelect(product)}
-              className="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors duration-150 flex items-center justify-between"
+              className="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors duration-150"
             >
-              <div>
-                <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                <div className="text-xs text-gray-500">${product.price}</div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <TagIcon className="h-5 w-5 text-gray-500" />
+                  <div>
+                    <div className="text-base font-semibold text-gray-900">{product.name}</div>
+                    <div className="flex items-center text-sm text-gray-500">
+                      <CurrencyDollarIcon className="h-4 w-4 mr-1" />
+                      {product.price.toFixed(2)}
+                    </div>
+                  </div>
+                </div>
+                <CheckIcon 
+                  className={`h-5 w-5 text-green-500 transition-opacity duration-200 ${
+                    searchTerm === product.name ? 'opacity-100' : 'opacity-0'
+                  }`}
+                />
               </div>
-              <FontAwesomeIcon 
-                icon={faCheck} 
-                className={`h-4 w-4 text-green-500 ${searchTerm === product.name ? 'opacity-100' : 'opacity-0'}`} 
-              />
             </div>
           ))}
         </div>
