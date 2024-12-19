@@ -9,7 +9,7 @@ import {
   WrenchScrewdriverIcon
 } from '@heroicons/react/24/outline';
 import { useState } from 'react';
-import BrandModelSelector from '../NewOrderSection/BrandModelSelector';
+import BrandModelSelector from './NewOrderSection/BrandModelSelector';
 
 function BudgetQuoteSection() {
   const [formData, setFormData] = useState({
@@ -53,6 +53,19 @@ function BudgetQuoteSection() {
 
   const handleSubmit = (type) => {
     console.log(`${type === 'quote' ? 'Presupuesto' : 'Cita'} generado:`, formData);
+    
+    // Aquí podrías agregar validación de datos antes de enviar
+    if (!formData.customerName || !formData.phone || !formData.operation) {
+      alert('Por favor complete todos los campos requeridos');
+      return;
+    }
+    
+    // Implementar lógica de envío según el tipo
+    if (type === 'quote') {
+      // Lógica para generar presupuesto
+    } else {
+      // Lógica para agendar cita
+    }
   };
 
   const handleClear = () => {

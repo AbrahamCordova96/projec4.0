@@ -1,6 +1,7 @@
+// src/components/dashboard/NewOrderSection/index.jsx
+
 import {
   BoltIcon,
-  CalendarIcon,
   CameraIcon,
   CheckIcon,
   ClipboardDocumentIcon,
@@ -15,7 +16,8 @@ import {
   WifiIcon,
   WrenchScrewdriverIcon
 } from '@heroicons/react/24/outline';
-import es from 'date-fns/locale/es';
+import { format, parseISO, addDays } from 'date-fns';
+import { es } from 'date-fns/locale/es';
 import { useEffect, useState } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -31,7 +33,7 @@ registerLocale('es', es);
 function NewOrderSection() {
   const [orderData, setOrderData] = useState({
     orderNumber: '',
-    creationDateTime: formatDateTime(new Date()),
+    creationDateTime: new Date(), // Almacenar como objeto Date
     customerName: '',
     customerLastName: '',
     customerPhone: '',
@@ -46,7 +48,7 @@ function NewOrderSection() {
     physicalDamage: '',
     processToPerform: '',
     repairOperations: [],
-    deliveryDateTime: '',
+    deliveryDateTime: null, // Almacenado como objeto Date o null
     totalPrice: '',
     advance: '',
     pendingBalance: '',
@@ -106,11 +108,34 @@ function NewOrderSection() {
     }));
   };
 
+  // **Modificación Principal: Almacenar deliveryDateTime como objeto Date**
   const handleDateTimeSelect = (date) => {
     setOrderData(prev => ({
       ...prev,
-      deliveryDateTime: formatDateTime(date)
+      deliveryDateTime: date // Almacenar directamente el objeto Date
     }));
+  };
+
+  const renderDatePicker = () => {
+    return (
+      <div className="relative">
+        <label className="block text-base font-semibold text-gray-700 mb-2">
+          Fecha y Hora de Entrega
+        </label>
+        <DatePicker
+          selected={orderData.deliveryDateTime} // Recibir directamente el objeto Date
+          onChange={handleDateTimeSelect}
+          showTimeSelect
+          timeFormat="HH:mm"
+          timeIntervals={15}
+          timeCaption="Hora"
+          dateFormat="dd/MM/yyyy HH:mm"
+          locale="es"
+          placeholderText="Seleccione fecha y hora de entrega"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-base font-medium text-gray-700"
+        />
+      </div>
+    );
   };
 
   const calculatePendingBalance = () => {
@@ -138,10 +163,36 @@ function NewOrderSection() {
         'deliveryDateTime'
       ];
 
-      const missingFields = requiredFields.filter(field => !orderData[field]);
+      const missingFields = requiredFields.filter(field => {
+        if (field === 'deliveryDateTime') {
+          return !orderData[field];
+        }
+        return !orderData[field].trim();
+      });
       if (missingFields.length > 0) {
         throw new Error(`Faltan campos requeridos: ${missingFields.join(', ')}`);
       }
+
+      // Formatear la fecha para almacenamiento
+      const formattedDeliveryDateTime = orderData.deliveryDateTime
+        ? format(orderData.deliveryDateTime, "dd/MM/yyyy HH:mm", { locale: es })
+        : null;
+
+      // Crear objeto de orden para almacenamiento
+      const orderToStore = {
+        ...orderData,
+        deliveryDateTime: formattedDeliveryDateTime, // Guardar fecha formateada
+        creationDateTime: formatDateTime(orderData.creationDateTime), // Formatear fecha de creación
+        id: Date.now(),
+        creationDate: new Date().toISOString(),
+        status: 'generada',
+        pendingBalance: calculatePendingBalance()
+      };
+
+      // Obtener órdenes existentes y agregar la nueva
+      const savedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+      savedOrders.push(orderToStore);
+      localStorage.setItem('orders', JSON.stringify(savedOrders));
 
       const accountingEntry = {
         date: new Date(),
@@ -152,13 +203,20 @@ function NewOrderSection() {
         amount: orderData.advance || orderData.totalPrice
       };
 
+      // Generar el ticket
       await printTickets({
         ...orderData,
+        deliveryDateTime: formattedDeliveryDateTime, // Asegurar que la fecha esté formateada
         pendingBalance: calculatePendingBalance()
       });
 
-      console.log('Orden generada:', orderData);
+      console.log('Orden generada:', orderToStore);
       console.log('Entrada contable:', accountingEntry);
+      
+      // Mostrar mensaje de éxito
+      alert('Orden generada y guardada exitosamente');
+      
+      // Limpiar el formulario
       handleClear();
     } catch (error) {
       console.error('Error al generar la orden:', error);
@@ -173,7 +231,7 @@ function NewOrderSection() {
       const newOrderNumber = await generateOrderNumber();
       setOrderData({
         orderNumber: newOrderNumber,
-        creationDateTime: formatDateTime(new Date()),
+        creationDateTime: new Date(), // Restablecer como objeto Date
         customerName: '',
         customerLastName: '',
         customerPhone: '',
@@ -188,7 +246,7 @@ function NewOrderSection() {
         physicalDamage: '',
         processToPerform: '',
         repairOperations: [],
-        deliveryDateTime: '',
+        deliveryDateTime: null, // Restablecer a null
         totalPrice: '',
         advance: '',
         pendingBalance: '',
@@ -239,7 +297,7 @@ function NewOrderSection() {
             </label>
             <input
               type="text"
-              value={orderData.creationDateTime}
+              value={formatDateTime(orderData.creationDateTime) || "Fecha inválida"}
               readOnly
               className="mt-2 block w-full rounded-md border-gray-300 bg-gray-50 font-medium"
             />
@@ -346,31 +404,7 @@ function NewOrderSection() {
           />
         </div>
 
-        <div>
-          <label className="block text-base font-semibold text-gray-700 mb-2">
-            Fecha y Hora de Entrega
-          </label>
-          <DatePicker
-            selected={orderData.deliveryDateTime ? new Date(orderData.deliveryDateTime) : null}
-            onChange={handleDateTimeSelect}
-            showTimeSelect
-            timeFormat="HH:mm"
-            timeIntervals={15}
-            timeCaption="Hora"
-            dateFormat="dd/MM/yyyy h:mm aa"
-            locale="es"
-            customInput={
-              <button className="inline-flex w-full justify-between items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <span className="inline-flex items-center">
-                  <CalendarIcon className="h-5 w-5 text-gray-500 mr-2" />
-                  {orderData.deliveryDateTime || 'Seleccionar fecha y hora'}
-                </span>
-                <CalendarIcon className="h-5 w-5 text-gray-500" />
-              </button>
-            }
-            className="w-full"
-          />
-        </div>
+        {renderDatePicker()}
 
         <div className="grid grid-cols-3 gap-4">
           <div>

@@ -1,3 +1,5 @@
+// src/utils/formatters.js
+
 export const formatCurrency = (amount) => {
   return new Intl.NumberFormat("es-MX", {
     style: "currency",
@@ -6,9 +8,10 @@ export const formatCurrency = (amount) => {
 };
 
 export const formatDateTime = (date) => {
-  if (!date || isNaN(new Date(date))) {
+  const parsedDate = new Date(date);
+  if (!date || isNaN(parsedDate)) {
     console.warn("Fecha inválida proporcionada a formatDateTime:", date);
-    return "Fecha inválida";
+    return null; // Retornar null en lugar de "Fecha inválida"
   }
 
   return new Intl.DateTimeFormat("es-MX", {
@@ -17,7 +20,7 @@ export const formatDateTime = (date) => {
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
-  }).format(new Date(date));
+  }).format(parsedDate);
 };
 
 export const generateOrderNumber = async () => {

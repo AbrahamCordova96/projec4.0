@@ -30,7 +30,7 @@ function BrandModelSelector({ onBrandChange, onModelChange, initialBrand = '', i
             setBrands(availableBrands);
         } catch (error) {
             setError('No se pudieron cargar las marcas disponibles');
-            console.error('Error loading brands:', error);
+            console.error('Error al cargar marcas:', error);
         }
     };
 
@@ -38,10 +38,9 @@ function BrandModelSelector({ onBrandChange, onModelChange, initialBrand = '', i
         setLoading(true);
         setError(null);
         try {
-            console.log(`Cargando modelos para la marca: ${brand}`); // Depuración
+            console.log(`Cargando modelos para la marca: ${brand}`);
             const modelData = await readModelsFromExcel(brand.toLowerCase() + '.xlsx');
             
-            // Validación de los datos devueltos
             if (Array.isArray(modelData) && modelData.length > 0) {
                 setModels(modelData);
                 console.log('Modelos cargados:', modelData);
@@ -52,7 +51,7 @@ function BrandModelSelector({ onBrandChange, onModelChange, initialBrand = '', i
             }
         } catch (error) {
             setError('Error al cargar los modelos');
-            console.error('Error loading models:', error);
+            console.error('Error al cargar modelos:', error);
         } finally {
             setLoading(false);
         }
@@ -71,41 +70,86 @@ function BrandModelSelector({ onBrandChange, onModelChange, initialBrand = '', i
             setSelectedBrand(brand);
             setCustomBrand('');
             setSelectedModel('');
+            setIsCustomModel(false);
             onBrandChange(brand);
         }
     };
 
+    const handleCustomBrandChange = (event) => {
+        const brand = event.target.value;
+        setCustomBrand(brand);
+        onBrandChange(brand);
+    };
+
     const handleModelChange = (event) => {
         const model = event.target.value;
-        setSelectedModel(model);
-        onModelChange(model);
+        if (model === 'custom') {
+            setIsCustomModel(true);
+            setCustomModel('');
+            setSelectedModel('');
+            onModelChange('', null);
+        } else {
+            setIsCustomModel(false);
+            setSelectedModel(model);
+            const selectedModelData = models.find(m => m.modelo === model);
+            onModelChange(model, selectedModelData);
+        }
+    };
+
+    const handleCustomModelChange = (event) => {
+        const model = event.target.value;
+        setCustomModel(model);
+        onModelChange(model, null);
     };
 
     return (
         <div className="grid grid-cols-2 gap-4">
             <div>
                 <label className="block text-sm font-medium text-gray-700">Marca</label>
-                <select
-                    value={selectedBrand}
-                    onChange={handleBrandChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    required
-                >
-                    <option value="">Seleccionar marca</option>
-                    {brands.map((brand, index) => (
-                        <option key={`${brand}-${index}`} value={brand}>
-                            {brand}
-                        </option>
-                    ))}
-                    <option value="custom">Otra marca...</option>
-                </select>
+                {!isCustomBrand ? (
+                    <select
+                        value={selectedBrand}
+                        onChange={handleBrandChange}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        required
+                    >
+                        <option value="">Seleccionar marca</option>
+                        {brands.map((brand, index) => (
+                            <option key={`${brand}-${index}`} value={brand}>
+                                {brand}
+                            </option>
+                        ))}
+                        <option value="custom">Otra marca...</option>
+                    </select>
+                ) : (
+                    <div className="space-y-2">
+                        <input
+                            type="text"
+                            value={customBrand}
+                            onChange={handleCustomBrandChange}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            placeholder="Escribir marca"
+                            required
+                        />
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setIsCustomBrand(false);
+                                setCustomBrand('');
+                            }}
+                            className="text-sm text-blue-600 hover:text-blue-800"
+                        >
+                            Volver a lista de marcas
+                        </button>
+                    </div>
+                )}
             </div>
 
             <div>
                 <label className="block text-sm font-medium text-gray-700">Modelo</label>
                 {loading ? (
-                    <div className="text-gray-500">Cargando modelos...</div>
-                ) : (
+                    <div className="mt-1 text-gray-500">Cargando modelos...</div>
+                ) : !isCustomModel && !isCustomBrand ? (
                     <select
                         value={selectedModel}
                         onChange={handleModelChange}
@@ -119,10 +163,34 @@ function BrandModelSelector({ onBrandChange, onModelChange, initialBrand = '', i
                                 {model.modelo}
                             </option>
                         ))}
+                        <option value="custom">Otro modelo...</option>
                     </select>
+                ) : (
+                    <div className="space-y-2">
+                        <input
+                            type="text"
+                            value={customModel}
+                            onChange={handleCustomModelChange}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            placeholder="Escribir modelo"
+                            required
+                        />
+                        {!isCustomBrand && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setIsCustomModel(false);
+                                    setCustomModel('');
+                                }}
+                                className="text-sm text-blue-600 hover:text-blue-800"
+                            >
+                                Volver a lista de modelos
+                            </button>
+                        )}
+                    </div>
                 )}
                 {error && (
-                    <div className="text-red-500 mt-1">
+                    <div className="text-red-500 text-sm mt-1">
                         {error}
                     </div>
                 )}
