@@ -1,3 +1,4 @@
+// src/components/common/Dropdown.jsx
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
@@ -7,17 +8,24 @@ const Dropdown = ({
   items, 
   className = '',
   buttonClassName = '',
-  itemsClassName = ''
+  itemsClassName = '',
+  align = 'right',
+  width = 'w-56',
+  disabled = false
 }) => {
   return (
     <Menu as="div" className={`relative inline-block text-left ${className}`}>
-      <Menu.Button className={`
-        inline-flex justify-center items-center w-full rounded-lg
-        bg-white px-4 py-2 text-sm font-medium text-gray-700
-        hover:bg-gray-50 focus:outline-none focus:ring-2
-        focus:ring-primary-500 focus:ring-offset-2
-        ${buttonClassName}
-      `}>
+      <Menu.Button 
+        disabled={disabled}
+        className={`
+          inline-flex justify-center items-center w-full rounded-lg
+          bg-white px-4 py-2 text-sm font-medium text-gray-700
+          hover:bg-gray-50 focus:outline-none focus:ring-2
+          focus:ring-blue-500 focus:ring-offset-2
+          disabled:opacity-50 disabled:cursor-not-allowed
+          ${buttonClassName}
+        `}
+      >
         {label}
         <ChevronDownIcon className="ml-2 -mr-1 h-5 w-5" aria-hidden="true" />
       </Menu.Button>
@@ -32,9 +40,9 @@ const Dropdown = ({
         leaveTo="transform opacity-0 scale-95"
       >
         <Menu.Items className={`
-          absolute right-0 mt-2 w-56 origin-top-right rounded-lg
-          bg-white shadow-lg ring-1 ring-black ring-opacity-5
-          focus:outline-none z-10
+          absolute ${align === 'right' ? 'right-0' : 'left-0'} mt-2 ${width}
+          origin-top-${align} rounded-lg bg-white shadow-lg ring-1 
+          ring-black ring-opacity-5 focus:outline-none z-10
           ${itemsClassName}
         `}>
           <div className="py-1">
@@ -43,9 +51,12 @@ const Dropdown = ({
                 {({ active }) => (
                   <button
                     onClick={item.onClick}
+                    disabled={item.disabled}
                     className={`
                       ${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}
+                      ${item.disabled ? 'opacity-50 cursor-not-allowed' : ''}
                       group flex w-full items-center px-4 py-2 text-sm
+                      ${item.className || ''}
                     `}
                   >
                     {item.icon && (

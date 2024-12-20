@@ -239,3 +239,147 @@ export const printTickets = async (orderData) => {
     throw error;
   }
 };
+
+const generateAppointmentContent = (data) => {
+  return `
+    <div class="section">
+      <h1>Cita #${data.id}</h1>
+      <div>Fecha de Cita: ${data.appointmentDate}</div>
+      <div>Cliente: ${data.customerName}</div>
+      <div>Teléfono: ${data.customerPhone}</div>
+    </div>
+    
+    <div class="section">
+      <div>Dispositivo: ${data.deviceType}</div>
+      <div>Marca: ${data.brand}</div>
+      <div>Modelo: ${data.model}</div>
+      ${data.repairReason ? `<div>Motivo: ${data.repairReason}</div>` : ""}
+    </div>
+    
+    <div class="section">
+      <div>Hora de Cita: ${data.appointmentTime}</div>
+      ${data.estimatedCost ? `<div>Costo Estimado: $${data.estimatedCost.toFixed(2)}</div>` : ""}
+    </div>
+    
+    <div class="disclaimer">
+      <p>*El cliente debe presentarse puntualmente a su cita programada.</p>
+      <p>*La cita tiene una tolerancia máxima de 15 minutos.</p>
+      <p>*El diagnóstico inicial es gratuito pero podría requerir tiempo adicional.</p>
+    </div>
+  `;
+};
+
+const generateBudgetContent = (data) => {
+  return `
+    <div class="section">
+      <h1>Presupuesto #${data.id}</h1>
+      // ...existing budget content...
+    </div>
+  `;
+};
+
+const generateOrderContent = (data) => {
+  return `
+    <div class="section">
+      <h1>No Orden #${data.id || data.orderNumber}</h1>
+      <div>Fecha: ${data.date || data.creationDateTime}</div>
+      <div>Cliente: ${data.customerName}</div>
+      <div>Teléfono: ${data.phone || data.customerPhone}</div>
+    </div>
+    
+    <div class="section">
+      <div>Dispositivo: ${data.deviceType}</div>
+      <div>Marca: ${data.brand}</div>
+      <div>Modelo: ${data.model}</div>
+      ${data.operation ? `<div>Operación: ${data.operation}</div>` : ''}
+      ${data.comments ? `<div>Comentarios: ${data.comments}</div>` : ''}
+    </div>
+    
+    <div class="section summary">
+      <div>
+        <span>Precio Total:</span>
+        <span>$${parseFloat(data.price || data.totalPrice || 0).toFixed(2)}</span>
+      </div>
+      ${data.appointmentDate ? `
+      <div>
+        <span>Fecha de Cita:</span>
+        <span>${data.appointmentDate}</span>
+      </div>
+      ` : ''}
+    </div>
+    
+    <div class="disclaimer">
+      <p>*El cliente debe presentarse con su ticket al momento de recoger su dispositivo.</p>
+      <p>*El diagnóstico inicial es gratuito pero podría requerir tiempo adicional.</p>
+      <p>*Algunos servicios requieren un anticipo para iniciar la reparación.</p>
+    </div>
+  `;
+};
+
+export const generateTicket = async (data, type = 'order') => {
+  try {
+    const ticketWindow = window.open("", "_blank");
+
+    if (!ticketWindow) {
+      throw new Error("No se pudo abrir la ventana para imprimir el ticket");
+    }
+
+    let content;
+    let title;
+
+    switch (type) {
+      case 'appointment':
+        content = generateAppointmentContent(data);
+        title = `Ticket de Cita #${data.id}`;
+        break;
+      case 'budget':
+        content = generateBudgetContent(data);
+        title = `Presupuesto #${data.id}`;
+        break;
+      default:
+        content = generateOrderContent(data);
+        title = `Ticket de Orden #${data.id || data.orderNumber}`;
+    }
+
+    const ticketTemplate = `
+      <html>
+      <head>
+        <title>${title}</title>
+        <style>
+          // ...existing styles...
+        </style>
+      </head>
+      <body>
+        <div class="ticket-header">
+          <img src="/images/logo.png" alt="LOGO" class="logo">
+          // ...existing header...
+        </div>
+        <div class="ticket-content">
+          ${content}
+        </div>
+      </body>
+      </html>
+    `;
+
+    ticketWindow.document.write(ticketTemplate);
+    ticketWindow.document.close();
+
+    return new Promise((resolve) => {
+      ticketWindow.onload = async () => {
+        try {
+          await ticketWindow.print();
+          setTimeout(() => {
+            ticketWindow.close();
+            resolve(true);
+          }, 1000);
+        } catch (error) {
+          console.error("Error al imprimir:", error);
+          resolve(false);
+        }
+      };
+    });
+  } catch (error) {
+    console.error("Error al generar ticket:", error);
+    throw error;
+  }
+};

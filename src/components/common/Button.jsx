@@ -1,3 +1,4 @@
+// src/components/common/Button.jsx
 import { forwardRef } from 'react';
 
 const Button = forwardRef(({ 
@@ -10,6 +11,8 @@ const Button = forwardRef(({
   disabled = false,
   type = 'button',
   loading = false,
+  fullWidth = false,
+  tooltip = '',
   ...props
 }, ref) => {
   const baseStyles = `
@@ -24,7 +27,8 @@ const Button = forwardRef(({
     primary: 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
     secondary: 'bg-gray-600 hover:bg-gray-700 text-white focus:ring-gray-500',
     danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
-    success: 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500'
+    success: 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500',
+    warning: 'bg-orange-500 hover:bg-orange-600 text-white focus:ring-orange-400'
   };
 
   const sizes = {
@@ -43,8 +47,10 @@ const Button = forwardRef(({
         ${baseStyles}
         ${variants[variant]}
         ${sizes[size]}
+        ${fullWidth ? 'w-full' : ''}
         ${className}
       `}
+      title={tooltip}
       {...props}
     >
       {loading ? (

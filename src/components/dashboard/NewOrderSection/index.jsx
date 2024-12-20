@@ -14,7 +14,9 @@ import {
   SpeakerWaveIcon,
   TrashIcon,
   WifiIcon,
-  WrenchScrewdriverIcon
+  WrenchScrewdriverIcon,
+  BellIcon,
+  FunnelIcon
 } from '@heroicons/react/24/outline';
 import { format, parseISO, addDays } from 'date-fns';
 import { es } from 'date-fns/locale/es';
@@ -26,6 +28,9 @@ import { printTickets } from '../../../utils/ticketGenerator';
 import CustomerInfo from './CustomerInfo';
 import DeviceInfo from './DeviceInfo';
 import PartsModal from './PartsModal';
+import Button from '../../common/Button';
+import { useNavigate } from 'react-router-dom';
+import Fuse from 'fuse.js'; // Asegúrate de haber instalado fuse.js
 
 // Registrar el idioma español
 registerLocale('es', es);
@@ -59,6 +64,9 @@ function NewOrderSection() {
 
   const [showPartsModal, setShowPartsModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fuse, setFuse] = useState(null); // Estado para Fuse
+
+  const navigate = useNavigate(); // Hook para navegación
 
   const systemFailureButtons = [
     { icon: SpeakerWaveIcon, text: 'Sonido' },
@@ -88,6 +96,21 @@ function NewOrderSection() {
     };
 
     fetchOrderNumber();
+  }, []);
+
+  useEffect(() => {
+    // Inicializar Fuse cuando pendingItems cambie
+    const initializeFuse = () => {
+      const items = JSON.parse(localStorage.getItem('pendingItems')) || [];
+      console.log('Inicializando Fuse con los siguientes items:', items);
+      const fuseInstance = new Fuse(items, {
+        keys: ['orderNumber', 'customerName', 'deviceModel'],
+        threshold: 0.3,
+      });
+      setFuse(fuseInstance);
+    };
+
+    initializeFuse();
   }, []);
 
   const handleSystemFailureClick = (failureText) => {
@@ -160,7 +183,8 @@ function NewOrderSection() {
         'brand',
         'model',
         'faultDescription',
-        'deliveryDateTime'
+        'deliveryDateTime',
+        'processToPerform'
       ];
 
       const missingFields = requiredFields.filter(field => {
@@ -210,14 +234,38 @@ function NewOrderSection() {
         pendingBalance: calculatePendingBalance()
       });
 
+      // Crear y almacenar el artículo pendiente
+      const pendingItem = {
+        id: Date.now(),
+        orderNumber: orderData.orderNumber,
+        customerName: `${orderData.customerName} ${orderData.customerLastName}`,
+        deviceBrand: orderData.brand,
+        deviceModel: orderData.model,
+        processToPerform: orderData.processToPerform,
+        status: 'pending',
+        creationDate: new Date().toISOString(),
+        deliveryDate: orderData.deliveryDateTime ? orderData.deliveryDateTime.toISOString() : null, // Guardar como ISO string
+        faultDescription: orderData.faultDescription,
+        deviceType: orderData.deviceType,
+        processNotes: []
+      };
+
+      const existingPendingItems = JSON.parse(localStorage.getItem('pendingItems') || '[]');
+      existingPendingItems.push(pendingItem);
+      localStorage.setItem('pendingItems', JSON.stringify(existingPendingItems));
+
+      // Inicializar Fuse con los nuevos pendientes
+      if (fuse) {
+        fuse.setCollection(existingPendingItems);
+        console.log('Fuse actualizado con nuevos pendientes:', existingPendingItems);
+      }
+
+      console.log('Pending item created:', pendingItem);
       console.log('Orden generada:', orderToStore);
       console.log('Entrada contable:', accountingEntry);
-      
-      // Mostrar mensaje de éxito
-      alert('Orden generada y guardada exitosamente');
-      
-      // Limpiar el formulario
-      handleClear();
+
+      // Redirigir a la página de Pendientes
+      navigate('/pendientes');
     } catch (error) {
       console.error('Error al generar la orden:', error);
       alert(error.message);
@@ -349,6 +397,7 @@ function NewOrderSection() {
               onChange={handleChange}
               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 font-medium"
               placeholder="Descripción del proceso"
+              required
             />
           </div>
         </div>
@@ -376,6 +425,7 @@ function NewOrderSection() {
             onChange={handleChange}
             className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 font-medium"
             rows={3}
+            placeholder="Descripción detallada de las fallas del sistema"
           />
         </div>
 
@@ -401,6 +451,7 @@ function NewOrderSection() {
             onChange={handleChange}
             className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 font-medium"
             rows={3}
+            placeholder="Descripción detallada de los daños físicos"
           />
         </div>
 
@@ -487,33 +538,33 @@ function NewOrderSection() {
         </div>
 
         <div className="flex justify-between space-x-4 mt-8">
-          <button
+          <Button
             type="button"
             onClick={() => setShowPartsModal(true)}
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            variant="primary"
             disabled={isSubmitting}
+            icon={DevicePhoneMobileIcon}
           >
-            <DevicePhoneMobileIcon className="h-6 w-6 mr-2" />
             Agregar Refacción
-          </button>
+          </Button>
           <div className="flex space-x-4">
-            <button
+            <Button
               type="button"
               onClick={handleClear}
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              variant="secondary"
               disabled={isSubmitting}
+              icon={TrashIcon}
             >
-              <TrashIcon className="h-6 w-6 mr-2" />
               Limpiar Orden
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              variant="success"
               disabled={isSubmitting}
+              icon={CheckIcon}
             >
-              <CheckIcon className="h-6 w-6 mr-2" />
               {isSubmitting ? 'Generando...' : 'Generar Orden'}
-            </button>
+            </Button>
           </div>
         </div>
       </form>

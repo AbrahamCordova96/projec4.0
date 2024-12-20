@@ -1,28 +1,78 @@
 import { useState } from 'react';
-import { printTickets } from '../../utils/ticketGenerator';
+import { generateTicket } from '../../utils/ticketGenerator';
 
 const TicketGenerator = () => {
-    const [inputData, setInputData] = useState({});
+    const [ticketType, setTicketType] = useState('order');
+    const [inputData, setInputData] = useState({
+        id: '',
+        customerName: '',
+        customerPhone: '',
+        deviceType: '',
+        brand: '',
+        model: '',
+        // Campos específicos para citas
+        appointmentDate: '',
+        appointmentTime: '',
+        repairReason: '',
+        estimatedCost: ''
+    });
 
-    const handlePrint = () => {
+    const handlePrint = async () => {
         try {
-            printTickets(inputData);
-            alert('Tickets generados correctamente.');
+            await generateTicket(inputData, ticketType);
+            alert('Ticket generado correctamente.');
         } catch (error) {
             console.error(error);
-            alert('Error generando los tickets.');
+            alert('Error generando el ticket.');
         }
+    };
+
+    const handleInputChange = (e) => {
+        setInputData({ ...inputData, [e.target.name]: e.target.value });
     };
 
     return (
         <div style={{ height: '100%', padding: '20px' }}>
             <h1>Generación de Tickets</h1>
+            
             <div>
-                <strong>Ingresa la información de la Orden:</strong>
+                <select 
+                    value={ticketType} 
+                    onChange={(e) => setTicketType(e.target.value)}
+                >
+                    <option value="order">Nueva Orden</option>
+                    <option value="appointment">Cita</option>
+                    <option value="budget">Presupuesto</option>
+                </select>
             </div>
-            <form onChange={(e) => setInputData({ ...inputData, [e.target.name]: e.target.value })}>
-                {/* Aquí van los campos del formulario */}
-                <button type="button" onClick={handlePrint}>Generar Tickets</button>
+
+            <form>
+                {/* Campos comunes */}
+                <input
+                    name="customerName"
+                    placeholder="Nombre del cliente"
+                    onChange={handleInputChange}
+                />
+                
+                {/* Campos específicos según el tipo */}
+                {ticketType === 'appointment' && (
+                    <>
+                        <input
+                            type="date"
+                            name="appointmentDate"
+                            onChange={handleInputChange}
+                        />
+                        <input
+                            type="time"
+                            name="appointmentTime"
+                            onChange={handleInputChange}
+                        />
+                    </>
+                )}
+
+                <button type="button" onClick={handlePrint}>
+                    Generar Ticket
+                </button>
             </form>
         </div>
     );

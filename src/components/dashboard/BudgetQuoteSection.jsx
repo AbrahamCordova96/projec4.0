@@ -9,9 +9,13 @@ import {
   WrenchScrewdriverIcon
 } from '@heroicons/react/24/outline';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { saveAppointment } from '../../utils/citasStorage';
+import { generateTicket } from '../../utils/ticketGenerator';
 import BrandModelSelector from './NewOrderSection/BrandModelSelector';
 
 function BudgetQuoteSection() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
     customerName: '',
@@ -83,6 +87,65 @@ function BudgetQuoteSection() {
       quality: '',
       providerPrice: ''
     });
+  };
+
+  const handleGenerateBudget = async () => {
+    try {
+      // Generar ticket para cliente
+      await generateTicket(formData, false, false);
+      // Generar ticket para taller
+      await generateTicket(formData, false, true);
+      
+      // Guardar como cita
+      const savedAppointment = saveAppointment({
+        ...formData,
+        tipo: 'presupuesto'
+      });
+      
+      if (window.confirm('¿Desea ir a la ventana de citas?')) {
+        navigate('/citas');
+      }
+    } catch (error) {
+      console.error('Error al generar presupuesto:', error);
+      alert('Error al generar el presupuesto');
+    }
+  };
+
+  const handleScheduleAppointment = async () => {
+    try {
+      const appointmentData = {
+        ...formData,
+        id: Date.now(), // Generar ID único
+        deviceType: formData.operation, // Usar la operación como tipo de dispositivo
+        creationDateTime: new Date().toLocaleString(), // Fecha actual formateada
+        totalPrice: formData.price // Asegurar compatibilidad con el template
+      };
+
+      // Generar ticket de cita
+      await generateTicket(appointmentData, 'appointment');
+      
+      // Guardar cita
+      const savedAppointment = saveAppointment({
+        ...appointmentData,
+        tipo: 'cita'
+      });
+      
+      navigate('/citas');
+    } catch (error) {
+      console.error('Error al agendar cita:', error);
+      alert('Error al agendar la cita');
+    }
+  };
+
+  const handleScheduleAppointmentWithData = async (appointmentData) => {
+    try {
+      const ticket = await generateTicket(appointmentData);
+      // Procesar el ticket generado
+      // ...existing code...
+    } catch (error) {
+      console.error('Error al agendar cita:', error);
+      // Manejar el error apropiadamente
+    }
   };
 
   return (
@@ -239,14 +302,14 @@ function BudgetQuoteSection() {
 
         <div className="flex space-x-4 pt-4">
           <button
-            onClick={() => handleSubmit('quote')}
+            onClick={handleGenerateBudget}
             className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <DocumentTextIcon className="h-6 w-6 mr-2" />
             Generar Presupuesto
           </button>
           <button
-            onClick={() => handleSubmit('appointment')}
+            onClick={handleScheduleAppointment}
             className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
           >
             <CalendarIcon className="h-6 w-6 mr-2" />

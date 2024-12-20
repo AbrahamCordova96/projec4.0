@@ -5,7 +5,7 @@ import FinancialMovements from '../components/dashboard/FinancialMovements';
 import NewOrderSection from '../components/dashboard/NewOrderSection';
 import SalesSection from '../components/dashboard/SalesSection';
 import { Link } from 'react-router-dom';
-import { ArrowDownTrayIcon, ArrowUpTrayIcon } from '@heroicons/react/24/solid';
+import { ArrowDownTrayIcon, ArrowUpTrayIcon, CalendarIcon } from '@heroicons/react/24/solid';
 
 function Dashboard() {
   return (
@@ -28,6 +28,15 @@ function Dashboard() {
         >
           <ArrowUpTrayIcon className="w-5 h-5 mr-2" />
           Entregar Equipo
+        </Link>
+
+        {/* Botón Gestión de Citas */}
+        <Link
+          to="/citas"
+          className="flex items-center px-6 py-3 rounded-md bg-green-500 text-white hover:bg-green-600 transition-all duration-200 shadow-md"
+        >
+          <CalendarIcon className="w-5 h-5 mr-2" />
+          Gestión de Citas
         </Link>
       </div>
 
