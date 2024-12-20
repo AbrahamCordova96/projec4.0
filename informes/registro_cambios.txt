@@ -33,8 +33,4 @@ Conclusión:
 1. Se agrega la ruta */orders** y se aplica configs. 
 2. Su genera el botón avinando la funcional
 
-
----------------------------------------------------------
-
-# Responsable: Systema Automñntico de Cambios 
-#> *Fecha: 17/12/2024*  
+Revision confirmada.
