@@ -1,4 +1,3 @@
-
 /* Estilos para la página de citas */
 .citas-page {
   padding: 20px;
@@ -23,10 +22,31 @@
 }
 
 .appointment-card {
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background-color: #f9f9f9;
+  @apply bg-white rounded-lg shadow-md p-4 mb-4 border-l-4 border-blue-500 hover:shadow-lg transition-all;
+}
+
+.appointment-header {
+  @apply flex justify-between items-center mb-3;
+}
+
+.appointment-title {
+  @apply text-lg font-semibold text-gray-800;
+}
+
+.appointment-date {
+  @apply text-sm text-gray-500;
+}
+
+.appointment-content {
+  @apply space-y-2;
+}
+
+.appointment-detail {
+  @apply text-sm text-gray-600 flex items-center gap-2;
+}
+
+.appointment-actions {
+  @apply mt-4 flex gap-2;
 }
 
 .appointment-card h2 {
@@ -37,22 +57,12 @@
   margin: 5px 0;
 }
 
-.btn-modify, .btn-print {
-  margin-right: 10px;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
 .btn-modify {
-  background-color: #ff9800;
-  color: #fff;
+  @apply px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex items-center gap-1;
 }
 
 .btn-print {
-  background-color: #4caf50;
-  color: #fff;
+  @apply px-3 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 flex items-center gap-1;
 }
 
 .modal {
@@ -76,6 +86,50 @@
 .modal button {
   padding: 8px 16px;
   margin-right: 10px;
+}
+
+.appointments-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.appointments-section.budget {
+  background-color: #e3f2fd;
+  border: 1px solid #90caf9;
+}
+
+.appointments-section h2 {
+  color: #1976d2;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #90caf9;
+}
+
+.budget-appointment-card {
+  border-left: 4px solid #1976d2;
+}
+
+/* Estilos para el modal */
+.modal-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+}
+
+.modal-content {
+  @apply bg-white rounded-lg w-full max-w-md p-6 relative shadow-xl;
+}
+
+/* Estilos para la barra de búsqueda */
+.search-container {
+  @apply flex gap-4 mb-6 flex-wrap;
+}
+
+.search-input-wrapper {
+  @apply relative flex-1 min-w-[200px];
+}
+
+.search-input {
+  @apply w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
 }
 
 @media (max-width: 768px) {

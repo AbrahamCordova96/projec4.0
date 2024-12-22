@@ -10,9 +10,10 @@ import {
 } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { saveAppointment } from '../../utils/citasStorage';
+import { saveAppointment, saveBudget } from '../../utils/citasStorage';
 import { generateTicket } from '../../utils/ticketGenerator';
 import BrandModelSelector from './NewOrderSection/BrandModelSelector';
+import { generateOrderNumber, parseAndValidateDate } from '../../utils/formatters';
 
 function BudgetQuoteSection() {
   const navigate = useNavigate();
@@ -55,23 +56,6 @@ function BudgetQuoteSection() {
     }));
   };
 
-  const handleSubmit = (type) => {
-    console.log(`${type === 'quote' ? 'Presupuesto' : 'Cita'} generado:`, formData);
-    
-    // Aquí podrías agregar validación de datos antes de enviar
-    if (!formData.customerName || !formData.phone || !formData.operation) {
-      alert('Por favor complete todos los campos requeridos');
-      return;
-    }
-    
-    // Implementar lógica de envío según el tipo
-    if (type === 'quote') {
-      // Lógica para generar presupuesto
-    } else {
-      // Lógica para agendar cita
-    }
-  };
-
   const handleClear = () => {
     setFormData({
       date: new Date().toISOString().split('T')[0],
@@ -91,60 +75,81 @@ function BudgetQuoteSection() {
 
   const handleGenerateBudget = async () => {
     try {
-      // Generar ticket para cliente
-      await generateTicket(formData, false, false);
-      // Generar ticket para taller
-      await generateTicket(formData, false, true);
-      
-      // Guardar como cita
-      const savedAppointment = saveAppointment({
-        ...formData,
-        tipo: 'presupuesto'
-      });
-      
-      if (window.confirm('¿Desea ir a la ventana de citas?')) {
-        navigate('/citas');
+      if (!formData.customerName || !formData.phone || !formData.operation) {
+        alert('Por favor complete todos los campos requeridos');
+        return;
       }
+
+      const date = parseAndValidateDate(formData.date);
+      if (!date) {
+        alert('La fecha ingresada no es válida');
+        return;
+      }
+
+      const appointmentDate = formData.appointmentDate ? 
+        parseAndValidateDate(formData.appointmentDate) : null;
+
+      const budgetData = {
+        ...formData,
+        id: Date.now().toString(),
+        type: 'budget',
+        date: date.toISOString(),
+        creationDateTime: new Date().toISOString(),
+        appointmentDate: appointmentDate?.toISOString() || null,
+        orderNumber: await generateOrderNumber(),
+        customerName: formData.customerName,
+        customerPhone: formData.phone,
+        deviceType: formData.operation,
+        totalPrice: parseFloat(formData.price) || 0,
+        advance: 0,
+        pendingBalance: parseFloat(formData.price) || 0
+      };
+
+      const savedBudget = await saveBudget(budgetData);
+      await generateTicket(savedBudget, 'budget');
+      
+      if (window.confirm('¿Desea agendar una cita para este presupuesto?')) {
+        await handleScheduleAppointment(budgetData);
+      }
+      
+      handleClear();
     } catch (error) {
       console.error('Error al generar presupuesto:', error);
       alert('Error al generar el presupuesto');
     }
   };
 
-  const handleScheduleAppointment = async () => {
+  const handleScheduleAppointment = async (budgetData = null) => {
     try {
+      const appointmentDate = parseAndValidateDate(formData.appointmentDate);
+      
+      if (!appointmentDate) {
+        alert('La fecha de cita ingresada no es válida');
+        return;
+      }
+
       const appointmentData = {
         ...formData,
-        id: Date.now(), // Generar ID único
-        deviceType: formData.operation, // Usar la operación como tipo de dispositivo
-        creationDateTime: new Date().toLocaleString(), // Fecha actual formateada
-        totalPrice: formData.price // Asegurar compatibilidad con el template
+        appointmentDate: appointmentDate.toISOString(),
+        id: Date.now().toString(),
+        type: 'appointment',
+        orderNumber: await generateOrderNumber(),
+        creationDateTime: new Date().toISOString(),
+        customerName: formData.customerName,
+        customerPhone: formData.phone,
+        deviceType: formData.operation,
+        totalPrice: parseFloat(formData.price),
+        source: budgetData ? 'budget' : 'direct'
       };
 
-      // Generar ticket de cita
       await generateTicket(appointmentData, 'appointment');
+      await saveAppointment(appointmentData);
       
-      // Guardar cita
-      const savedAppointment = saveAppointment({
-        ...appointmentData,
-        tipo: 'cita'
-      });
-      
+      alert('Cita agendada correctamente.');
       navigate('/citas');
     } catch (error) {
       console.error('Error al agendar cita:', error);
       alert('Error al agendar la cita');
-    }
-  };
-
-  const handleScheduleAppointmentWithData = async (appointmentData) => {
-    try {
-      const ticket = await generateTicket(appointmentData);
-      // Procesar el ticket generado
-      // ...existing code...
-    } catch (error) {
-      console.error('Error al agendar cita:', error);
-      // Manejar el error apropiadamente
     }
   };
 
@@ -309,7 +314,7 @@ function BudgetQuoteSection() {
             Generar Presupuesto
           </button>
           <button
-            onClick={handleScheduleAppointment}
+            onClick={() => handleScheduleAppointment()}
             className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
           >
             <CalendarIcon className="h-6 w-6 mr-2" />

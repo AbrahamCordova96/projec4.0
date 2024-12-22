@@ -24,7 +24,7 @@ import { useEffect, useState } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { formatDateTime, generateOrderNumber } from '../../../utils/formatters';
-import { printTickets } from '../../../utils/ticketGenerator';
+import { generateTicket } from '../../../utils/ticketGenerator'; // Cambio de printTickets a generateTicket
 import CustomerInfo from './CustomerInfo';
 import DeviceInfo from './DeviceInfo';
 import PartsModal from './PartsModal';
@@ -228,11 +228,11 @@ function NewOrderSection() {
       };
 
       // Generar el ticket
-      await printTickets({
+      await generateTicket({
         ...orderData,
         deliveryDateTime: formattedDeliveryDateTime, // Asegurar que la fecha esté formateada
         pendingBalance: calculatePendingBalance()
-      });
+      }, 'order'); // Uso correcto de generateTicket
 
       // Crear y almacenar el artículo pendiente
       const pendingItem = {
@@ -450,7 +450,7 @@ function NewOrderSection() {
             value={orderData.physicalDamage}
             onChange={handleChange}
             className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 font-medium"
-            rows={3}
+             rows={3}
             placeholder="Descripción detallada de los daños físicos"
           />
         </div>
@@ -585,3 +585,4 @@ function NewOrderSection() {
 }
 
 export default NewOrderSection;
+

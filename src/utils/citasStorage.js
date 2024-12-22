@@ -1,10 +1,11 @@
-export const saveAppointment = (appointmentData) => {
+const saveAppointment = (appointmentData) => {
   try {
     const appointments = getAppointments();
     const newAppointment = {
       ...appointmentData,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
+      source: appointmentData.source || 'direct' // Agregar origen de la cita
     };
     appointments.push(newAppointment);
     localStorage.setItem("appointments", JSON.stringify(appointments));
@@ -15,7 +16,7 @@ export const saveAppointment = (appointmentData) => {
   }
 };
 
-export const getAppointments = () => {
+const getAppointments = () => {
   try {
     const appointments = JSON.parse(localStorage.getItem("appointments")) || [];
     return appointments.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
@@ -25,7 +26,7 @@ export const getAppointments = () => {
   }
 };
 
-export const updateAppointment = (id, newData) => {
+const updateAppointment = (id, newData) => {
   try {
     const appointments = getAppointments();
     const index = appointments.findIndex((app) => app.id === id);
@@ -39,4 +40,39 @@ export const updateAppointment = (id, newData) => {
     console.error("Error al actualizar la cita:", error);
     throw error;
   }
+};
+
+const saveBudget = (budgetData) => {
+  try {
+    const budgets = JSON.parse(localStorage.getItem('budgets')) || [];
+    const newBudget = {
+      ...budgetData,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString()
+    };
+    budgets.push(newBudget);
+    localStorage.setItem('budgets', JSON.stringify(budgets));
+    return newBudget;
+  } catch (error) {
+    console.error("Error al guardar el presupuesto:", error);
+    throw error;
+  }
+};
+
+const getBudgets = () => {
+  try {
+    return JSON.parse(localStorage.getItem('budgets')) || [];
+  } catch (error) {
+    console.error("Error al obtener presupuestos:", error);
+    return [];
+  }
+};
+
+// Una única exportación al final del archivo
+export {
+  saveAppointment,
+  getAppointments,
+  updateAppointment,
+  saveBudget,
+  getBudgets
 };
