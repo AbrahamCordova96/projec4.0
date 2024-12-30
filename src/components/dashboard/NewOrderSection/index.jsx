@@ -14,23 +14,21 @@ import {
   SpeakerWaveIcon,
   TrashIcon,
   WifiIcon,
-  WrenchScrewdriverIcon,
-  BellIcon,
-  FunnelIcon
+  WrenchScrewdriverIcon
 } from '@heroicons/react/24/outline';
-import { format, parseISO, addDays } from 'date-fns';
+import { format } from 'date-fns';
 import { es } from 'date-fns/locale/es';
+import Fuse from 'fuse.js'; // Asegúrate de haber instalado fuse.js
 import { useEffect, useState } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import { useNavigate } from 'react-router-dom';
 import { formatDateTime, generateOrderNumber } from '../../../utils/formatters';
 import { generateTicket } from '../../../utils/ticketGenerator'; // Cambio de printTickets a generateTicket
+import Button from '../../common/Button';
 import CustomerInfo from './CustomerInfo';
 import DeviceInfo from './DeviceInfo';
 import PartsModal from './PartsModal';
-import Button from '../../common/Button';
-import { useNavigate } from 'react-router-dom';
-import Fuse from 'fuse.js'; // Asegúrate de haber instalado fuse.js
 
 // Registrar el idioma español
 registerLocale('es', es);
@@ -316,16 +314,16 @@ function NewOrderSection() {
     <div className="bg-white p-6 rounded-lg shadow-md">
       <div className="flex items-center mb-4">
         <ClipboardDocumentIcon className="h-7 w-7 text-gray-700 mr-3" />
-        <h2 className="text-2xl font-bold text-gray-800">Nueva Orden</h2>
+        <h2 className="text-2xl font-extrabold text-gray-900">Nueva Orden</h2>
       </div>
       <hr className="border-gray-300 mb-6" />
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-base font-semibold text-gray-700">
+            <label className="block text-base font-bold text-gray-800 mb-2">
               <span className="inline-flex items-center">
-                <HashtagIcon className="h-5 w-5 text-gray-500 mr-2" />
+                <HashtagIcon className="h-6 w-6 text-gray-600 mr-2" />
                 Número de Orden
               </span>
             </label>
@@ -333,7 +331,7 @@ function NewOrderSection() {
               type="text"
               value={orderData.orderNumber}
               readOnly
-              className="mt-2 block w-full rounded-md border-gray-300 bg-gray-50 font-medium"
+              className="mt-2 block w-full rounded-md border-gray-300 bg-gray-50 text-lg font-semibold"
             />
           </div>
           <div>
@@ -347,7 +345,7 @@ function NewOrderSection() {
               type="text"
               value={formatDateTime(orderData.creationDateTime) || "Fecha inválida"}
               readOnly
-              className="mt-2 block w-full rounded-md border-gray-300 bg-gray-50 font-medium"
+              className="mt-2 block w-full rounded-md border-gray-300 bg-gray-50 text-lg font-semibold"
             />
           </div>
         </div>

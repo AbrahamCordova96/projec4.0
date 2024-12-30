@@ -9,14 +9,20 @@ import {
   CogIcon
 } from '@heroicons/react/24/solid';
 import { Fragment, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import NotificationsModal from './dashboard/ModalWindows/NotificationsModal';
 
 function Navigation() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
 
-  // Función para abrir/cerrar la modal
   const toggleNotificationsModal = () => setShowNotifications(!showNotifications);
+
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    navigate('/login');
+  };
 
   const adminItems = [
     { path: '/products', label: 'Control de Productos', icon: ChartBarIcon },
@@ -154,28 +160,23 @@ function Navigation() {
               </Menu.Items>
             </Transition>
           </Menu>
+          <button
+            onClick={handleLogout}
+            className="p-2 rounded hover:bg-white/5"
+            title="Cerrar Sesión"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
         </div>
       </div>
 
       {/* Modal de Notificaciones */}
-      {showNotifications && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-5 rounded shadow-lg w-1/3">
-            <h2 className="text-xl font-bold mb-4">Notificaciones</h2>
-            <ul>
-              <li className="mb-2">🔔 Notificación 1: Tarea pendiente</li>
-              <li className="mb-2">🔔 Notificación 2: Nuevo mensaje recibido</li>
-              <li className="mb-2">🔔 Notificación 3: Actualización disponible</li>
-            </ul>
-            <button
-              className="mt-4 bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-              onClick={toggleNotificationsModal}
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
-      )}
+      <NotificationsModal 
+        isOpen={showNotifications}
+        onClose={toggleNotificationsModal}
+      />
     </nav>
   );
 }

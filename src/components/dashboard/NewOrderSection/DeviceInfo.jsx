@@ -17,15 +17,15 @@ function DeviceInfo({ data, onChange }) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-xs font-medium text-gray-500">Información del dispositivo</h3>
+      <h3 className="text-base font-semibold text-gray-700 uppercase mb-4">Información del Dispositivo</h3>
       
       <div className="grid grid-cols-3 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Tipo de dispositivo</label>
+          <label className="block text-sm font-semibold text-gray-800 mb-2">Tipo de Dispositivo</label>
           <select
             value={data.deviceType}
             onChange={(e) => onChange({...data, deviceType: e.target.value})}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
             required
           >
             <option value="">Seleccionar...</option>

@@ -1,75 +1,50 @@
-import { Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const Modal = ({
-  isOpen,
-  onClose,
-  title,
-  icon,
-  children,
-  maxWidth = 'max-w-2xl'
-}) => {
+const Modal = ({ isOpen, onClose, children, title }) => {
   return (
-    <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={onClose}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-black/25 backdrop-blur-sm" />
-        </Transition.Child>
-
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4 text-center">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className={`
-                w-full ${maxWidth} transform overflow-hidden rounded-2xl
-                bg-white p-6 text-left align-middle shadow-xl transition-all
-              `}>
-                <Dialog.Title as="div" className="flex justify-between items-center mb-4">
-                  <div className="flex items-center space-x-3">
-                    {icon && (
-                      <div className="p-2 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg">
-                        <FontAwesomeIcon 
-                          icon={icon} 
-                          className="text-white h-5 w-5" 
-                        />
-                      </div>
-                    )}
-                    <h3 className="text-lg font-medium leading-6 text-gray-900">
-                      {title}
-                    </h3>
-                  </div>
-                  <button
-                    type="button"
-                    className="rounded-lg p-1 hover:bg-gray-100 transition-colors duration-200 focus:outline-none"
-                    onClick={onClose}
-                  >
-                    <XMarkIcon className="h-5 w-5 text-gray-500" />
-                  </button>
-                </Dialog.Title>
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Overlay con blur y centrado usando flex */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-40"
+            onClick={onClose}
+          />
+          
+          {/* Modal centrado correctamente */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="fixed inset-0 flex items-center justify-center z-50"
+            onClick={(e) => e.stopPropagation()} // Evita cerrar el modal al hacer clic dentro de él
+          >
+            <div className="w-[95%] md:w-11/12 md:max-w-4xl bg-white rounded-xl shadow-elevated overflow-hidden">
+              {/* Header */}
+              <div className="flex justify-between items-center p-6 border-b bg-gray-50">
+                <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
+                <button
+                  onClick={onClose}
+                  className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              {/* Content con scroll */}
+              <div className="p-6 max-h-[calc(85vh-8rem)] overflow-y-auto">
                 {children}
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </div>
-      </Dialog>
-    </Transition>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 };
 

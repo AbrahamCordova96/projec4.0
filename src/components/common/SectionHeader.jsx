@@ -16,11 +16,11 @@ const SectionHeader = ({
         </div>
       )
       }
-      <h2 className="text-lg font-semibold text-gray-700">
+      <h2 className="text-2xl font-bold text-gray-900">
         {title}
       </h2>
       {subtitle && (
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-base font-medium text-gray-600 mt-2">
           {subtitle}
         </p>
       )}
